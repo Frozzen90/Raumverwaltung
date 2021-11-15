@@ -1,0 +1,8 @@
+Tätigkeiten
+- Erweiterung der Controller
+- Einrichtung der Verbindung zum SQL-Server (MySQL)
+
+GitLinks für Services
+- https://github.com/Frozzen90/Raumverwaltung
+
+Stand 15.11.2021
