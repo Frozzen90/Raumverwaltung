@@ -10,6 +10,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            &nbsp;
             <asp:ImageButton 
                 ID="Home" 
                 runat="server" 
@@ -19,6 +20,9 @@
                 ToolTip = "zurück" 
                 HorizontalContentAlignment = "Left"
             />
+            &nbsp;
+            <asp:LoginName ID="LoginName1" runat="server" />
+            &nbsp;<asp:LoginStatus ID="LoginStatus1" runat="server" />
         </div>
     </form>
 </body>

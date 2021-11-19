@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Raumverwaltung.Models
+﻿namespace Raumverwaltung.Models
 {
     public class Raum
     {

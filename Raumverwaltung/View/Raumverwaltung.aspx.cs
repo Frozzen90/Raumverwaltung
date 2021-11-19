@@ -16,7 +16,7 @@ namespace Raumverwaltung.View
 
         protected void btnHome_Click(object sender, ImageClickEventArgs e)
         {
-
+            Response.Redirect("");
         }
     }
 }

@@ -2,8 +2,9 @@
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using System.Data.SqlClient;
+using System.Data.SQLite;
+using System.IO;
 
 namespace Raumverwaltung.Controllers
 {
@@ -21,7 +22,7 @@ namespace Raumverwaltung.Controllers
             Client = null;
         }
 
-
+        #region SSH/MySQL
         private void ConnectSSH()
         {
             string host = "";
@@ -43,7 +44,6 @@ namespace Raumverwaltung.Controllers
             MySqlCommand Com = new MySqlCommand();
             Com.Connection = new MySqlConnection(MySqlStr);
             Com.CommandText = SqlStr;
-
         }
 
         private void DisconnectSSH()
@@ -52,10 +52,180 @@ namespace Raumverwaltung.Controllers
             Client = null;
             IsSshOpened = false;
         }
+        #endregion
 
-        public void SQLRequest()
+        #region SQLite
+        private void CreateTestDB(string path)
         {
+            SQLiteConnection.CreateFile(path);
+
+            //***** Tabellen erstellen
+            string conStr = $"Data Source='{path}';";
+            List<string> querryStr = new List<string>();
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            SQLiteConnection con = new SQLiteConnection(conStr);
             try
+            {
+                con.Open();
+                for (int I = 0; I < querryStr.Count; I++)
+                {
+                    SQLiteCommand com = new SQLiteCommand(querryStr[I], con);
+                    com.ExecuteNonQuery();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+            //*****
+        }
+
+        private void TestdatenAnlegen(string path)
+        {
+            string conStr = $"Data Source='{path}';";
+            List<string> querryStr = new List<string>();
+            #region Testdaten Patientenzimmer
+            querryStr.Add($"INSERT INTO Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"INSERT INTO Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"INSERT INTO Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            #endregion
+            #region Testdaten Raum
+            querryStr.Add($"INSERT INTO Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"INSERT INTO Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            querryStr.Add($"INSERT INTO Patientenzimmer(" +
+                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $" , " +
+                          $" , " +
+                          $" );");
+            #endregion
+            #region Testdaten 
+            #endregion
+            #region Testdaten 
+            #endregion
+            #region Testdaten 
+            #endregion
+
+            SQLiteConnection con = new SQLiteConnection(conStr);
+            try
+            {
+                con.Open();
+                for (int I = 0; I < querryStr.Count; I++)
+                {
+                    SQLiteCommand com = new SQLiteCommand(querryStr[I], con);
+                    com.ExecuteNonQuery();
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                con.Close();
+            }
+            //*****
+
+        }
+
+        private void ConnectToTestDB(string SqlStr)
+        {
+            string DBname = "LocalTestDB.db";
+            string PathToDB = AppDomain.CurrentDomain.BaseDirectory + DBname;
+
+            if (!File.Exists(PathToDB))
+            {
+                CreateTestDB(PathToDB);
+            }
+
+            SqlCommand Com = new SqlCommand();
+            Com.Connection = new SqlConnection($"Data Source='{PathToDB}';"); //;Version=3;";
+            Com.CommandText = SqlStr;
+        }
+        #endregion
+
+        public void SQLRequest(string SqlStr)
+        {
+            bool ConnetionFailed = false;
+            //***** Zentraldatenbank öffnen
+            try 
             {
                 ConnectSSH();
                 if (IsSshOpened)
@@ -70,12 +240,34 @@ namespace Raumverwaltung.Controllers
             }
             catch (Exception)
             {
-
-                throw;
+                ConnetionFailed = true;
             }
             finally
             {
                 DisconnectSSH();
+            }
+            //*****
+            //***** Testdatenbank öffnen
+            if (ConnetionFailed)  
+            {
+                ConnetionFailed = false;
+                try
+                {
+                    ConnectToTestDB(SqlStr);
+                }
+                catch (Exception)
+                {
+                    ConnetionFailed = true;
+                }
+                finally
+                {
+
+                }
+            }
+            //*****
+            if (ConnetionFailed)
+            {
+                //Meldung ausgeben, dass keine DB erreichbar ist.
             }
         }
     }
