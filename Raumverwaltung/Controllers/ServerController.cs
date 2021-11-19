@@ -63,10 +63,9 @@ namespace Raumverwaltung.Controllers
             string conStr = $"Data Source='{path}';";
             List<string> querryStr = new List<string>();
             querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
+                          $"ID_Raumnummer INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                          $"Plätze, " +
+                          $"DavonBelegt );");
             querryStr.Add($"CREATE TABLE Patientenzimmer(" +
                           $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                           $" , " +
@@ -77,46 +76,7 @@ namespace Raumverwaltung.Controllers
                           $" , " +
                           $" , " +
                           $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
+
             SQLiteConnection con = new SQLiteConnection(conStr);
             try
             {
@@ -143,26 +103,55 @@ namespace Raumverwaltung.Controllers
             string conStr = $"Data Source='{path}';";
             List<string> querryStr = new List<string>();
             #region Testdaten Patientenzimmer
-            querryStr.Add($"INSERT INTO Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"INSERT INTO Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"INSERT INTO Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
+            querryStr.Add($"INSERT INTO Patientenzimmer( " +
+                          $"ID_Raumnummer, " +
+                          $"Plätze, " +
+                          $"DavonBelegt) " +
+                          $"Values( " +
+                          $"1, " +
+                          $"4, " +
+                          $"3);");
+            querryStr.Add($"INSERT INTO Patientenzimmer( " +
+                          $"ID_Raumnummer, " +
+                          $"Plätze, " +
+                          $"DavonBelegt) " +
+                          $"Values( " +
+                          $"2, " +
+                          $"3, " +
+                          $"1);");
+            querryStr.Add($"INSERT INTO Patientenzimmer( " +
+                          $"ID_Raumnummer, " +
+                          $"Plätze, " +
+                          $"DavonBelegt) " +
+                          $"Values( " +
+                          $"3, " +
+                          $"4, " +
+                          $"0);");
+            #endregion
+            #region Testdaten Zweck_Raum
+            querryStr.Add($"INSERT INTO Zweck_Raum( " +
+                          $"ID, " +
+                          $"Zweck " +
+                          $"Values( " +
+                          $"1, " +
+                          $"'Patientenraum');");
+            querryStr.Add($"INSERT INTO Zweck_Raum( " +
+                          $"ID, " +
+                          $"Zweck " +
+                          $"Values( " +
+                          $"2, " +
+                          $"'Kantine');");
+            querryStr.Add($"INSERT INTO Zweck_Raum( " +
+                          $"ID, " +
+                          $"Zweck " +
+                          $"Values( " +
+                          $"3, " +
+                          $"'Aufenthaltsraum');");
             #endregion
             #region Testdaten Raum
-            querryStr.Add($"INSERT INTO Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
+            querryStr.Add($"INSERT INTO Raum(" +
+                          $"ID_Raumnummer, " +
+                          $"ID_Zweck, " +
                           $" , " +
                           $" );");
             querryStr.Add($"INSERT INTO Patientenzimmer(" +
