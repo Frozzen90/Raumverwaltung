@@ -36,6 +36,26 @@
             Betriebsstatus = betriebsstatus;
         }
 
+        private void setRaumID(int ID)
+        {
+            rID = ID;
+        }
+
+        public int getRaumID()
+        {
+            return rID;
+        }
+
+        private void setZweckID(int ID)
+        {
+            ZweckID = ID;
+        }
+
+        public int getZweckID()
+        {
+            return ZweckID;
+        }
+
         public void setBetriebsstatus(bool ausserBetrieb)
         {
             Betriebsstatus = ausserBetrieb;
@@ -45,5 +65,6 @@
         {
             return Betriebsstatus;
         }
+
     }
 }
