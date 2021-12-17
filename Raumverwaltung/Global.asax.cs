@@ -11,11 +11,12 @@ namespace Raumverwaltung
     {
         private static MainController _MainController;
 
-        public static MainController MainController { get => _MainController; set => _MainController = value; }
+        public static MainController cMainController { get => _MainController; set => _MainController = value; }
 
         void Application_Start(object sender, EventArgs e)
         {
-
+            cMainController = new MainController();
+            cMainController.LadeDaten(true);
             // Code, der beim Anwendungsstart ausgeführt wird
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);

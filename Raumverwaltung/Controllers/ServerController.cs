@@ -1,7 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
+using Raumverwaltung.Models;
 using Renci.SshNet;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.IO;
@@ -10,254 +12,244 @@ namespace Raumverwaltung.Controllers
 {
     public class ServerController
     {
-        private bool _isSSHopened;
-        private SshClient _Client;
+        private MySqlCommand _Com;
+        private SqlCommand _TestCom;
+        private bool _isTestDB;
 
-        public bool IsSshOpened { get => _isSSHopened; set => _isSSHopened = value; }
-        public SshClient Client { get => _Client; set => _Client = value; }
+        public MySqlCommand Com { get => _Com; set => _Com = value; }
+        public SqlCommand TestCom { get => _TestCom; set => _TestCom = value; }
+        public bool IsTestDB { get => _isTestDB; set => _isTestDB = value; }
+        
 
         public ServerController()
         {
-            IsSshOpened = false;
-            Client = null;
+            Com = new MySqlCommand();
+            TestCom = new SqlCommand();
+            IsTestDB = false;
         }
 
-        #region SSH/MySQL
-        private void ConnectSSH()
-        {
-            string host = "";
-            string username = "";
-            string dings = "";
-            Client = new SshClient(host, username, dings);
-            Client.Connect();
-            IsSshOpened = Client.IsConnected;
-        }
 
-        private void ConnectMySql(string SqlStr)
+        public bool TryConnectToMySql()
         {
-            string Server = "";
-            string Port = "";
-            string UserID = "";
-            string dings = "";
-            string DbName = "";
+            bool ret = false;
+            string Server = "192.168.14.74";
+            string Port = "80";
+            string UserID = "sebastian";
+            string dings = "BurgApfel";
+            string DbName = "central_db";
             string MySqlStr = $"SERVER={Server};PORT={Port};UID={UserID};PASSWORD={dings};DATABASE={DbName}";
-            MySqlCommand Com = new MySqlCommand();
             Com.Connection = new MySqlConnection(MySqlStr);
-            Com.CommandText = SqlStr;
-        }
+            try
+            {
+                Com.Connection.Open();
+                Com.Connection.Close();
+                ret = true;
+            }
+            catch
+            {
+                ret = false;
+            }
+            finally
+            {
 
-        private void DisconnectSSH()
-        {
-            Client.Disconnect();
-            Client = null;
-            IsSshOpened = false;
+            }
+            return ret;
         }
-        #endregion
 
         #region SQLite
-        private void CreateTestDB(string path)
+        public bool TryConnectToTestDB()
         {
-            SQLiteConnection.CreateFile(path);
-
-            //***** Tabellen erstellen
-            string conStr = $"Data Source='{path}';";
-            List<string> querryStr = new List<string>();
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID_Raumnummer INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $"Plätze, " +
-                          $"DavonBelegt );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"CREATE TABLE Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-
-            SQLiteConnection con = new SQLiteConnection(conStr);
-            try
-            {
-                con.Open();
-                for (int I = 0; I < querryStr.Count; I++)
-                {
-                    SQLiteCommand com = new SQLiteCommand(querryStr[I], con);
-                    com.ExecuteNonQuery();
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-            finally
-            {
-                con.Close();
-            }
-            //*****
-        }
-
-        private void TestdatenAnlegen(string path)
-        {
-            string conStr = $"Data Source='{path}';";
-            List<string> querryStr = new List<string>();
-            #region Testdaten Patientenzimmer
-            querryStr.Add($"INSERT INTO Patientenzimmer( " +
-                          $"ID_Raumnummer, " +
-                          $"Plätze, " +
-                          $"DavonBelegt) " +
-                          $"Values( " +
-                          $"1, " +
-                          $"4, " +
-                          $"3);");
-            querryStr.Add($"INSERT INTO Patientenzimmer( " +
-                          $"ID_Raumnummer, " +
-                          $"Plätze, " +
-                          $"DavonBelegt) " +
-                          $"Values( " +
-                          $"2, " +
-                          $"3, " +
-                          $"1);");
-            querryStr.Add($"INSERT INTO Patientenzimmer( " +
-                          $"ID_Raumnummer, " +
-                          $"Plätze, " +
-                          $"DavonBelegt) " +
-                          $"Values( " +
-                          $"3, " +
-                          $"4, " +
-                          $"0);");
-            #endregion
-            #region Testdaten Zweck_Raum
-            querryStr.Add($"INSERT INTO Zweck_Raum( " +
-                          $"ID, " +
-                          $"Zweck " +
-                          $"Values( " +
-                          $"1, " +
-                          $"'Patientenraum');");
-            querryStr.Add($"INSERT INTO Zweck_Raum( " +
-                          $"ID, " +
-                          $"Zweck " +
-                          $"Values( " +
-                          $"2, " +
-                          $"'Kantine');");
-            querryStr.Add($"INSERT INTO Zweck_Raum( " +
-                          $"ID, " +
-                          $"Zweck " +
-                          $"Values( " +
-                          $"3, " +
-                          $"'Aufenthaltsraum');");
-            #endregion
-            #region Testdaten Raum
-            querryStr.Add($"INSERT INTO Raum(" +
-                          $"ID_Raumnummer, " +
-                          $"ID_Zweck, " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"INSERT INTO Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            querryStr.Add($"INSERT INTO Patientenzimmer(" +
-                          $"ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                          $" , " +
-                          $" , " +
-                          $" );");
-            #endregion
-            #region Testdaten 
-            #endregion
-            #region Testdaten 
-            #endregion
-            #region Testdaten 
-            #endregion
-
-            SQLiteConnection con = new SQLiteConnection(conStr);
-            try
-            {
-                con.Open();
-                for (int I = 0; I < querryStr.Count; I++)
-                {
-                    SQLiteCommand com = new SQLiteCommand(querryStr[I], con);
-                    com.ExecuteNonQuery();
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-            finally
-            {
-                con.Close();
-            }
-            //*****
-
-        }
-
-        private void ConnectToTestDB(string SqlStr)
-        {
+            bool ret = false;
             string DBname = "LocalTestDB.db";
             string PathToDB = AppDomain.CurrentDomain.BaseDirectory + DBname;
 
             if (!File.Exists(PathToDB))
             {
-                CreateTestDB(PathToDB);
+                File.Create(PathToDB);
             }
 
-            SqlCommand Com = new SqlCommand();
-            Com.Connection = new SqlConnection($"Data Source='{PathToDB}';"); //;Version=3;";
-            Com.CommandText = SqlStr;
+            if (File.Exists(PathToDB))
+            {
+                TestCom = new SqlCommand();
+                TestCom.Connection = new SqlConnection($"Data Source='{PathToDB}';"); //;Version=3;";
+                ret = true;
+            }
+            else
+            {
+                Global.cMainController.LogFile("TestDatenbank konnte nicht angelegt werden!");
+                ret = false;
+            }
+            return ret;
         }
         #endregion
 
-        public void SQLRequest(string SqlStr)
+        private int GetSqlId(int ID)
         {
-            bool ConnetionFailed = false;
-            //***** Zentraldatenbank öffnen
-            try 
-            {
-                ConnectSSH();
-                if (IsSshOpened)
-                {
+            int SqlId = -1;
+            
+            return SqlId;
+        }
 
-                    
-                }
-                else
+        public void LoescheDaten(int ID)
+        {
+            ID = GetSqlId(ID);
+        }
+
+        public List<Raum> LoadRaeumeFromDb()
+        {
+            List<Raum> RaumListe = new List<Raum>();
+            try
+            {
+                Com.CommandText =
+                    "SELECT " +
+                    "   R.ID AS rID, " +
+                    "   Z.ID, " +
+                    "   Z.Zweck, " +
+                    "   R.Außerbetrieb " +
+                    "FROM " +
+                    "   Raum AS R " +
+                    "INNER JOIN " +
+                    "   Zweck_Raum AS Z " +
+                    "ON " +
+                    "   R.ID_Zweck = Z.ID";
+                Com.Connection.Open();
+                MySqlDataReader SqlDR = Com.ExecuteReader();
+                while (SqlDR.Read())
                 {
-                    //nicht verbunden
+                    Raum aRaum = new Raum();
+                    aRaum.rID = Int16.Parse(SqlDR["rID"].ToString());
+                    aRaum.Betriebsstatus = Boolean.Parse(SqlDR["ID"].ToString());
+                    aRaum.ZweckID = Int16.Parse(SqlDR["zID"].ToString());
+                    aRaum.ZweckName = SqlDR["ID"].ToString();
+                    RaumListe.Add(aRaum);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                ConnetionFailed = true;
+                RaumListe = null;
+                Global.cMainController.LogFile(e.Message);
             }
             finally
             {
-                DisconnectSSH();
+                Com.Connection.Close();
             }
-            //*****
-            //***** Testdatenbank öffnen
-            if (ConnetionFailed)  
-            {
-                ConnetionFailed = false;
-                try
-                {
-                    ConnectToTestDB(SqlStr);
-                }
-                catch (Exception)
-                {
-                    ConnetionFailed = true;
-                }
-                finally
-                {
+            return RaumListe;
+        }
 
+        public List<Raum> LoadRaeumeFromTestDb()
+        {
+            List<Raum> RaumListe = new List<Raum>();
+            try
+            {
+                Com.CommandText =
+                    "SELECT " +
+                    "   R.ID AS rID, " +
+                    "   Z.ID, " +
+                    "   Z.Zweck, " +
+                    "   R.Außerbetrieb " +
+                    "FROM " +
+                    "   Raum AS R " +
+                    "INNER JOIN " +
+                    "   Zweck_Raum AS Z " +
+                    "ON " +
+                    "   R.ID_Zweck = Z.ID";
+                Com.Connection.Open();
+                MySqlDataReader SqlDR = Com.ExecuteReader();
+                while (SqlDR.Read())
+                {
+                    Raum aRaum = new Raum();
+                    aRaum.rID = Int16.Parse(SqlDR["rID"].ToString());
+                    aRaum.Betriebsstatus = Boolean.Parse(SqlDR["ID"].ToString());
+                    aRaum.ZweckID = Int16.Parse(SqlDR["zID"].ToString());
+                    aRaum.ZweckName = SqlDR["ID"].ToString();
+                    RaumListe.Add(aRaum);
                 }
             }
-            //*****
-            if (ConnetionFailed)
+            catch (Exception e)
             {
-                //Meldung ausgeben, dass keine DB erreichbar ist.
+                RaumListe = null;
+                Global.cMainController.LogFile(e.Message);
             }
+            finally
+            {
+                Com.Connection.Close();
+            }
+            return RaumListe;
+        }
+
+        public List<Patientenzimmer> LoadPatientenzimmerFromDb()
+        {
+            List<Patientenzimmer> PzListe = new List<Patientenzimmer>();
+            try
+            {
+                Com.CommandText =
+                    "SELECT " +
+                    "   P.ID AS pID, " +
+                    "   P.Plätze AS BettenMax, " +
+                    "   P.DavonBelegt AS BettenBelegt" +
+                    "FROM " +
+                    "   Patientenzimmer AS P ";
+                Com.Connection.Open();
+                MySqlDataReader SqlDR = Com.ExecuteReader();
+                while (SqlDR.Read())
+                {
+                    Patientenzimmer aPz = new Patientenzimmer();
+                    aPz.pzID = Int16.Parse(SqlDR["pID"].ToString());
+                    aPz.BettenBelegt = Int16.Parse(SqlDR["BettenMax"].ToString());
+                    aPz.BettenMaxAnzahl = Int16.Parse(SqlDR["BettenBelegt"].ToString());
+                    PzListe.Add(aPz);
+                }
+            }
+            catch (Exception e)
+            {
+                PzListe = null;
+                Global.cMainController.LogFile(e.Message);
+            }
+            finally
+            {
+
+            }
+            return PzListe;
+        }
+
+        public List<Patientenzimmer> LoadPatientenzimmerFromTestDb()
+        {
+            List<Patientenzimmer> PzListe = new List<Patientenzimmer>();
+            try
+            {
+                Com.CommandText =
+                    "SELECT " +
+                    "   P.ID AS pID, " +
+                    "   P.Plätze AS BettenMax, " +
+                    "   P.DavonBelegt AS BettenBelegt" +
+                    "FROM " +
+                    "   Patientenzimmer AS P ";
+                Com.Connection.Open();
+                MySqlDataReader SqlDR = Com.ExecuteReader();
+                while (SqlDR.Read())
+                {
+                    Patientenzimmer aPz = new Patientenzimmer();
+                    aPz.pzID = Int16.Parse(SqlDR["pID"].ToString());
+                    aPz.BettenBelegt = Int16.Parse(SqlDR["BettenMax"].ToString());
+                    aPz.BettenMaxAnzahl = Int16.Parse(SqlDR["BettenBelegt"].ToString());
+                    PzListe.Add(aPz);
+                }
+            }
+            catch (Exception e)
+            {
+                PzListe = null;
+                Global.cMainController.LogFile(e.Message);
+            }
+            finally
+            {
+
+            }
+            return PzListe;
+        }
+
+        public void SaveToDb()
+        {
+
         }
     }
 }

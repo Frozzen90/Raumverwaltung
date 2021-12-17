@@ -1,9 +1,8 @@
 Tätigkeiten
 - Erweiterung der Controller
-- Einrichtung der Verbindung zum SQL-Server (MySQL via SSH)
-- Einrichtung lokaler Testdatenbank
+- Anpassung der Klassen
 
 GitLinks für Services
 - https://github.com/Frozzen90/Raumverwaltung
 
-Stand 19.11.2021
+Stand 17.12.2021
