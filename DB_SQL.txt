@@ -1,8 +1,8 @@
-Create table usr_p602752_2.Personen(ID int auto_increment primary key, Telefonnummer varchar(14), Nachname varchar(20), Vorname varchar(20), Rolle int);
-Create table usr_p602752_2.Adresse(ID int auto_increment primary key, Stasse varchar(30), Hausnummer varchar (4), Ort varchar(30), PLZ int(5));
-Create table usr_p602752_2.Rolle(ID int auto_increment primary key, Rolle varchar(20));
-Create table usr_p602752_2.Patientendaten(ID_Person int primary key, Krankenkasse varchar(20), Notizen varchar(1000), Raum int(5), Datum_Zugang date, Datum_Entlassung date);
-Create table usr_p602752_2.Besucher(ID_Person int primary key, Datum_Letzterbesuch date, Besucht_Patient varchar(20));
-Create table usr_p602752_2.Raum(ID_RaumNummer int primary key, ID_Zweck int, Außerbetrieb bool);
-Create table usr_p602752_2.Zweck_Raum(ID int auto_increment primary key, Zweck varchar(20));
-Create table usr_p602752_2.Patientenzimmer(ID_RaumNummer int primary key, Plätze int, DavonBelegt int);
+Create table Personen(ID int auto_increment primary key, Telefonnummer varchar(14), Nachname varchar(20), Vorname varchar(20), Rolle int);
+Create table Adresse(ID int auto_increment primary key, Stasse varchar(30), Hausnummer varchar (4), Ort varchar(30), PLZ int(5));
+Create table Rolle(ID int auto_increment primary key, Rolle varchar(20));
+Create table Patientendaten(ID_Person int primary key, Krankenkasse varchar(20), Notizen varchar(1000), Raum int(5), Datum_Zugang date, Datum_Entlassung date);
+Create table Besucher(ID_Person int primary key, Datum_Letzterbesuch date, Besucht_Patient varchar(20));
+Create table Raum(ID_RaumNummer int primary key, ID_Zweck int, Außerbetrieb bool);
+Create table Zweck_Raum(ID int auto_increment primary key, Zweck varchar(20));
+Create table Patientenzimmer(ID_RaumNummer int primary key, Plätze int, DavonBelegt int);

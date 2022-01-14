@@ -55,10 +55,6 @@ namespace Raumverwaltung.View
         protected void Page_Load(object sender, EventArgs e)
         {
             int UserID = 0;
-            foreach (Raum r in Global.cMainController.Raeume)
-            {
-                
-            }
 
             //Get UserID noch imlpementieren
             CheckUserRole(UserID);
@@ -142,29 +138,40 @@ namespace Raumverwaltung.View
 
         protected void Grid1_Load(object sender, EventArgs e)
         {
-            TableCell TC = new TableCell();
-            //rID
-            TC.Text = "Raum ID";
-            Grid1.HeaderRow.Cells.Add(TC);
-            //Zweck ID
-            TC.Text = "RaumtypID";
-            Grid1.HeaderRow.Cells.Add(TC);
-            //Zweck Name
-            TC.Text = "Raumtyp";
-            Grid1.HeaderRow.Cells.Add(TC);
-            //Betriebsstatus
-            TC.Text = "AußerBetrieb";
-            Grid1.HeaderRow.Cells.Add(TC);
+            Grid1_Fuellen();
         }
 
         private void Grid1_Fuellen()
         {
             DataTable DT = new DataTable();
-            TableRow DR = new TableRow();
-            TableCell TC = new TableCell(); 
+            //DT.Col[0]
+            DataColumn Col = new DataColumn("ID");
+            Col.DataType = System.Type.GetType("System.Int32");
+            DT.Columns.Add(Col);
+            //DT.Col[1]
+            Col = new DataColumn("RaumtypID");
+            Col.DataType = System.Type.GetType("System.Int32");
+            DT.Columns.Add(Col);
+            //DT.Col[2]
+            Col = new DataColumn("Raumtyp");
+            Col.DataType = System.Type.GetType("System.String");
+            DT.Columns.Add(Col);
+            //DT.Col[3]
+            Col = new DataColumn("Betriebsstatus");
+            Col.DataType = System.Type.GetType("System.Boolean");
+            DT.Columns.Add(Col);
 
-            DR.Cells.Add(Global.cMainController.Raeume[1].);
-            
+            foreach (Raum R in Global.cMainController.Raeume)
+            {
+                DataRow DR = DT.NewRow();
+                DR[0] = R.rID;
+                DR[1] = R.ZweckID;
+                DR[2] = R.ZweckName;
+                DR[3] = R.Betriebsstatus;
+                DT.Rows.Add(DR);
+            }
+            Grid1.DataSource = DT;
+            BindDataGrid1();
         }
 
         protected void Grid1_RowDeleting(object sender, System.Web.UI.WebControls.GridViewDeleteEventArgs e)
@@ -221,18 +228,38 @@ namespace Raumverwaltung.View
             Grid1.DataBind();
         }
 
+        private void Grid2_Fuellen()
+        {
+            DataTable DT = new DataTable();
+            //DT.Col[0]
+            DataColumn Col = new DataColumn("ID");
+            Col.DataType = System.Type.GetType("System.Int32");
+            DT.Columns.Add(Col);
+            //DT.Col[1]
+            Col = new DataColumn("Betten belegt");
+            Col.DataType = System.Type.GetType("System.Int32");
+            DT.Columns.Add(Col);
+            //DT.Col[2]
+            Col = new DataColumn("Betten maximal");
+            Col.DataType = System.Type.GetType("System.Int32");
+            DT.Columns.Add(Col);
+
+            foreach (Patientenzimmer P in Global.cMainController.Patientenzimmers)
+            {
+                DataRow DR = DT.NewRow();
+                int DTID = DT.Rows.Count;
+                DR[0] = P.pzID;
+                DR[1] = P.BettenBelegt;
+                DR[2] = P.BettenMaxAnzahl;
+                DT.Rows.Add(DR);
+            }
+            Grid1.DataSource = DT;
+            BindDataGrid2();
+        }
+
         protected void Grid2_Load(object sender, EventArgs e)
         {
-            TableCell TC = new TableCell();
-            //pzID
-            TC.Text = "Zimmer ID";
-            Grid1.HeaderRow.Cells.Add(TC);
-            //BettenMaxAnzahl
-            TC.Text = "Betten Maximal";
-            Grid1.HeaderRow.Cells.Add(TC);
-            //BettenBelegt
-            TC.Text = "Betten Belegt";
-            Grid1.HeaderRow.Cells.Add(TC);
+            Grid2_Fuellen();
         }
 
         protected void Grid2_RowDeleting(object sender, System.Web.UI.WebControls.GridViewDeleteEventArgs e)

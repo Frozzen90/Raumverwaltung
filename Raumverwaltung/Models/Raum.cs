@@ -5,7 +5,7 @@
         private int _ID;
         private int _ZweckID;           //foreign Key
         private string _ZweckName;
-        private bool _Betriebsstatus;   //z.B. außer Betrieb 
+        private bool _Betriebsstatus;   //z.B. außer Betrieb = True
         private bool _Bearbeitet;
 
         public int rID { get => _ID; set => _ID = value; }

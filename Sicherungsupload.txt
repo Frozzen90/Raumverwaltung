@@ -5,4 +5,4 @@ Tätigkeiten
 GitLinks für Services
 - https://github.com/Frozzen90/Raumverwaltung
 
-Stand 17.12.2021
+Stand 14.01.2022
