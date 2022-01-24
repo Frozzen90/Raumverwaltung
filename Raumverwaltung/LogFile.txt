@@ -1,0 +1,5 @@
+﻿14.01.2022 12:22:25: Unable to connect to any of the specified MySQL hosts.; 
+14.01.2022 12:23:03: Unable to connect to any of the specified MySQL hosts.; 
+14.01.2022 13:35:48: Unknown column 'R.ID' in 'field list'; 
+14.01.2022 13:36:42: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'Patientenzimmer AS p' at line 1; 
+21.01.2022 13:47:24: Die Zeichenfolge wurde nicht als gültiger Boolean erkannt.; 

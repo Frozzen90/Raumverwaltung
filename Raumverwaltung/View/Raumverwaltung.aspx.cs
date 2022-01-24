@@ -1,4 +1,5 @@
-﻿using Raumverwaltung.Models;
+﻿using Raumverwaltung.Controllers;
+using Raumverwaltung.Models;
 using System;
 using System.Data;
 using System.Web.UI;
@@ -58,6 +59,9 @@ namespace Raumverwaltung.View
 
             //Get UserID noch imlpementieren
             CheckUserRole(UserID);
+
+            Grid1_Fuellen();
+            Grid2_Fuellen();
         }
 
         private void CheckUserRole(int UserID)
@@ -136,27 +140,24 @@ namespace Raumverwaltung.View
             Grid1.DataBind();
         }
 
-        protected void Grid1_Load(object sender, EventArgs e)
+        protected void ddlZweck_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Grid1_Fuellen();
+
         }
 
         private void Grid1_Fuellen()
         {
+
             DataTable DT = new DataTable();
             //DT.Col[0]
             DataColumn Col = new DataColumn("ID");
             Col.DataType = System.Type.GetType("System.Int32");
             DT.Columns.Add(Col);
             //DT.Col[1]
-            Col = new DataColumn("RaumtypID");
-            Col.DataType = System.Type.GetType("System.Int32");
-            DT.Columns.Add(Col);
-            //DT.Col[2]
             Col = new DataColumn("Raumtyp");
             Col.DataType = System.Type.GetType("System.String");
             DT.Columns.Add(Col);
-            //DT.Col[3]
+            //DT.Col[2]
             Col = new DataColumn("Betriebsstatus");
             Col.DataType = System.Type.GetType("System.Boolean");
             DT.Columns.Add(Col);
@@ -165,13 +166,13 @@ namespace Raumverwaltung.View
             {
                 DataRow DR = DT.NewRow();
                 DR[0] = R.rID;
-                DR[1] = R.ZweckID;
-                DR[2] = R.ZweckName;
-                DR[3] = R.Betriebsstatus;
+                DR[1] = R.ZweckName;
+                DR[2] = R.AußerBetrieb;
                 DT.Rows.Add(DR);
             }
             Grid1.DataSource = DT;
-            BindDataGrid1();
+            Grid1.DataBind();
+            Session["Grid1"] = Grid1.DataSource;
         }
 
         protected void Grid1_RowDeleting(object sender, System.Web.UI.WebControls.GridViewDeleteEventArgs e)
@@ -185,25 +186,94 @@ namespace Raumverwaltung.View
 
         protected void Grid1_RowEditing(object sender, System.Web.UI.WebControls.GridViewEditEventArgs e)
         {
-
-
-
-
-            btnAddRaum.Enabled = true;
+            //Set the edit index.
+            int EditIndex = e.NewEditIndex;
+            Grid1.EditIndex = EditIndex;
+            //Bind data to the GridView control.
+            BindDataGrid1();
+            Grid1.Rows[EditIndex].Cells[1].Enabled = false;
+            btnAddRaum.Enabled = false;
         }
 
         protected void Grid1_RowCancelingEdit(object sender, System.Web.UI.WebControls.GridViewCancelEditEventArgs e)
         {
-
-
-
+            DataTable DT = (DataTable)Session["GridView1"];
+            int editIndex = Grid1.EditIndex;
+            int RowID = editIndex;
+            //Reset the edit index.
+            Grid1.EditIndex = -1;
+            //Bind data to the GridView control.
+            DataRow dtr = DT.Rows[RowID];
+            if (dtr[0].ToString() == "")
+            {
+                DT.Rows[RowID].Delete();
+            }
+            BindDataGrid1();
             btnAddRaum.Enabled = true;
         }
 
         protected void Grid1_RowUpdating(object sender, System.Web.UI.WebControls.GridViewUpdateEventArgs e)
         {
+            DataTable DT = (DataTable)Session["GridView1"];
+
+            GridViewRow row = Grid1.Rows[e.RowIndex];
+
+            for (int I = 1; I < DT.Columns.Count; I++)
+            {
+                string TbValue = ((TextBox)(row.Cells[I + 1].Controls[0])).Text;
+                string Cap = DT.Columns[I].Caption;
+
+                if (Cap.ToLower().EndsWith("datum"))
+                {
+                    DateTime DateVal = DateTime.Today;
+
+                    try
+                    {
+                        DateVal = DateTime.Parse(TbValue);
+                    }
+                    catch
+                    {
+                        //nichts
+                    }
+                    finally
+                    {
+                        TbValue = String.Format("{0:dd.MM.yyyy}", DateVal);
+                    }
+                }
+
+                DT.Rows[row.DataItemIndex][I] = TbValue;
+            }
+
+            string IDstr = ((TextBox)(row.Cells[1].Controls[0])).Text;
+
+            int ID = -1;
+
+            try
+            {
+                ID = Int16.Parse(IDstr);
+            }
+            catch
+            {
+                ID = 0;
+            }
+
+            switch (ID)
+            {
+                case -1:
+                    //nichts
+                    break;
+                case 0:
+                    //InsertPerson(e.RowIndex);
+                    break;
+                default:
+                    //UpdatePerson(e.RowIndex);
+                    break;
+            }
 
 
+            Grid1.EditIndex = -1;
+
+            BindDataGrid1();
 
             btnAddRaum.Enabled = true;
         }
@@ -253,13 +323,19 @@ namespace Raumverwaltung.View
                 DR[2] = P.BettenMaxAnzahl;
                 DT.Rows.Add(DR);
             }
-            Grid1.DataSource = DT;
-            BindDataGrid2();
+            Grid2.DataSource = DT;
+            Grid2.DataBind();
+            Session["Grid2"] = Grid2.DataSource;
+            ButtonField BF = new ButtonField();
+            BF.Text = "Bearbeiten";
+            BF.ButtonType = 0;
+            Grid2.Columns.Add(BF);
+            //< asp:ButtonField ButtonType = "Button" Text = "Schaltfläche" />
         }
 
-        protected void Grid2_Load(object sender, EventArgs e)
+        protected void Grid2_PreRender(object sender, EventArgs e)
         {
-            Grid2_Fuellen();
+
         }
 
         protected void Grid2_RowDeleting(object sender, System.Web.UI.WebControls.GridViewDeleteEventArgs e)
@@ -288,7 +364,7 @@ namespace Raumverwaltung.View
 
         protected void Grid2_RowUpdating(object sender, System.Web.UI.WebControls.GridViewUpdateEventArgs e)
         {
-
+            
 
             btnAddPersZimmer.Enabled = true;
         }
@@ -302,6 +378,11 @@ namespace Raumverwaltung.View
         }
 
         protected void Grid3_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void LoginStatus1_LoggingOut(object sender, LoginCancelEventArgs e)
         {
 
         }

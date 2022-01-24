@@ -1,8 +1,9 @@
 Tätigkeiten
 - Erweiterung der Controller
+	- Bearbeitung der Insert- und Update-Funktionen der Klassen
 - Anpassung der Klassen
 
 GitLinks für Services
 - https://github.com/Frozzen90/Raumverwaltung
 
-Stand 14.01.2022
+Stand 21.01.2022

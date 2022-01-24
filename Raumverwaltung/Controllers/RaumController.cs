@@ -12,9 +12,21 @@ namespace Raumverwaltung.Controllers
         }
 
         // GET api/<controller>/5
-        public string Get(int id)
+        public string Get(int id, string sessionID)
         {
-            //Abfrage der Adresse einbauen.
+            string CheckSession = "GET URL FÜR SESSION CHECKEN";
+            CheckSession += "/session " + sessionID;
+            // GET REQUEST MIT CheckSession string als URL, RÜCKGABE JSON OBJ;
+            /*
+            {
+                "responseState" : bool,
+                "username" : string,
+                "rolename" : string,
+                "permission_read" : bool,
+                "permission_read" : bool,
+                "permission_read" : bool,
+            }
+            */
             return "value";
         }
 
