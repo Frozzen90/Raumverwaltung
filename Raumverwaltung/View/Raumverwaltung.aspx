@@ -38,13 +38,17 @@
                             OnRowEditing="Grid1_RowEditing"
                             OnRowUpdating="Grid1_RowUpdating" 
                             OnRowDataBound="Grid1_RowDataBound"
-                            ShowHeaderWhenEmpty="True" >
+                            ShowHeaderWhenEmpty="True"
+                            AutoGenerateColumns="False"
+                            >
                             <Columns>
-                                <asp:TemplateField>
+                                <asp:BoundField DataField="ID" HeaderText="ID" />
+                                <asp:TemplateField  HeaderText="Zweck">
                                     <ItemTemplate>
-                                        <asp:DropDownList ID="ddlZweck" runat="server" Autopostback="true" OnSelectedIndexChanged="ddlZweck_SelectedIndexChanged"/>
+                                         <asp:DropDownList ID="ddlZweck" runat="server" OnDataBound="ddltest_DataBound"/>
                                     </ItemTemplate>
                                 </asp:TemplateField>
+                                <asp:CheckBoxField DataField="außer Betrieb" HeaderText="außer Betrieb" />
                             </Columns>
                         </asp:GridView> 
                     </asp:TableCell>
@@ -55,7 +59,7 @@
             </asp:Table>
         </div>
         <div>
-            <asp:Table ID="Table2" runat="server" Visible="false">
+            <asp:Table ID="Table2" runat="server" Visible="true">
                 <asp:TableRow runat="server">
                     <asp:TableCell runat="server">
                         <asp:GridView
@@ -82,26 +86,35 @@
                 OnRowCancelingEdit="Grid2_RowCancelingEdit"
                 OnRowDeleting="Grid2_RowDeleting"
                 OnRowEditing="Grid2_RowEditing"
-                OnRowUpdating="Grid2_RowUpdating" OnRowDataBound="Grid3_RowDataBound" 
+                OnRowUpdating="Grid2_RowUpdating" 
+                OnRowDataBound="Grid3_RowDataBound" 
+                ShowHeaderWhenEmpty="True"
+                AutoGenerateColumns="False"
                 >
                 <Columns>
-                    <asp:BoundField 
-                    />
-                    <asp:TemplateField>
+                    <asp:BoundField HeaderText="ID" />
+                    <asp:TemplateField HeaderText="Zweck">
+                        <EditItemTemplate>
+                             <asp:DropDownList ID="ddlZweck" runat="server"/>
+                        </EditItemTemplate>
                         <ItemTemplate>
-                            <asp:DropDownList 
-                                ID="ddlZweck" 
-                                runat="server" 
-                                Autopostback="true" 
-                                OnSelectedIndexChanged="ddlZweck_SelectedIndexChanged"/>
+                            <asp:Label ID="lblZweck" runat="server" />
                         </ItemTemplate>
                     </asp:TemplateField>
-                    <asp:BoundField />
+                    <asp:TemplateField HeaderText="außer Betrieb">
+                        <EditItemTemplate>
+                            <asp:CheckBox ID="cbABetrieb" runat="server" />
+                        </EditItemTemplate>
+                        <ItemTemplate>
+                            <asp:CheckBox ID="cbABetrieb" runat="server" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:CheckBoxField Text="Test" />
                 </Columns>
                 </asp:GridView>
                 <br />
                 <asp:CheckBox ID="CB1" runat="server" />
-                <asp:DropDownList ID="ddltest" runat="server"/>
+                <asp:DropDownList ID="ddltest" runat="server" OnDataBound="ddltest_DataBound"/>
                 <br />
         </div>
     </form>

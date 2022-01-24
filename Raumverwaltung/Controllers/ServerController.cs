@@ -120,7 +120,6 @@ namespace Raumverwaltung.Controllers
                     aRaum.rID = Int16.Parse(SqlDR["rID"].ToString());
                     aRaum.AußerBetrieb = Boolean.Parse(SqlDR["Außerbetrieb"].ToString());
                     aRaum.ZweckID = Int16.Parse(SqlDR["zID"].ToString());
-                    aRaum.ZweckName = SqlDR["Zweck"].ToString();
                     RaumListe.Add(aRaum);
                 }
             }

@@ -13,7 +13,7 @@ namespace Raumverwaltung.Controllers
         private List<Raum> _Raeume;
         private List<RaumZweck> _RaumZwecks;
 
-        private ServerController SrvCntr { get => _SrvCntr; set => _SrvCntr = value; }
+        public ServerController SrvCntr { get => _SrvCntr; set => _SrvCntr = value; }
         public List<Patientenzimmer> Patientenzimmers { get => _Patientenzimmers; set => _Patientenzimmers = value; }
         public List<Raum> Raeume { get => _Raeume; set => _Raeume = value; }
         public List<RaumZweck> RaumZwecks { get => _RaumZwecks; set => _RaumZwecks = value; }
@@ -26,7 +26,7 @@ namespace Raumverwaltung.Controllers
             RaumZwecks = null;
         }
 
-        public void LadeDaten(bool refresh)
+        public void LadeDaten(bool refresh = false)
         {
             if (SrvCntr.TryConnectToMySql())
             {
