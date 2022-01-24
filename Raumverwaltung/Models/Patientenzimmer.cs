@@ -23,6 +23,15 @@
             Added = false;
         }
 
+        public Patientenzimmer(Patientenzimmer PZ)
+        {
+            this.pzID = PZ.pzID;
+            this.BettenMaxAnzahl = PZ.BettenMaxAnzahl;
+            this.BettenBelegt = PZ.BettenBelegt;
+            this.Bearbeitet = false;
+            this.Added = false;
+        }
+
         public Patientenzimmer(int iD, int bettenMaxAnzahl, int bettenBelegt, int RaumID, bool bearbeitet = false, bool added = false)
         {
             pzID = iD;
@@ -39,7 +48,14 @@
 
         public void decMaxBetten(int beds)
         {
-            BettenMaxAnzahl -= beds;
+            if (BettenMaxAnzahl >= BettenBelegt)
+            {
+                BettenMaxAnzahl -= beds;
+            }
+            else
+            {
+                //Meldung ausgeben, dass BettenMaxAnzahl nicht kleiner als BettenBelegt sein darf.
+            }
         }
 
         public void BettBelegen()

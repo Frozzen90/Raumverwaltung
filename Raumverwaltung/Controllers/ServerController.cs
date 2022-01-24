@@ -3,7 +3,6 @@ using Raumverwaltung.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.IO;
 
 namespace Raumverwaltung.Controllers
 {
@@ -71,45 +70,6 @@ namespace Raumverwaltung.Controllers
                 Global.cMainController.LogFile(e.Message);
             }
             return ret;
-        }
-
-        #region SQLite
-        public bool TryConnectToTestDB()
-        {
-            bool ret = false;
-            string DBname = "LocalTestDB.db";
-            string PathToDB = AppDomain.CurrentDomain.BaseDirectory + DBname;
-
-            if (!File.Exists(PathToDB))
-            {
-                File.Create(PathToDB);
-            }
-
-            if (File.Exists(PathToDB))
-            {
-                TestCom = new SqlCommand();
-                TestCom.Connection = new SqlConnection($"Data Source='{PathToDB}';"); //;Version=3;";
-                ret = true;
-            }
-            else
-            {
-                Global.cMainController.LogFile("TestDatenbank konnte nicht angelegt werden!");
-                ret = false;
-            }
-            return ret;
-        }
-        #endregion
-
-        private int GetSqlId(int ID)
-        {
-            int SqlId = -1;
-            
-            return SqlId;
-        }
-
-        public void LoescheDaten(int ID)
-        {
-            ID = GetSqlId(ID);
         }
 
         #region MySQLDB
@@ -217,7 +177,6 @@ namespace Raumverwaltung.Controllers
         #endregion
 
         #region Patientenzimmer
-
         public List<Patientenzimmer> LoadPatientenzimmerFromDb()
         {
             List<Patientenzimmer> PzListe = new List<Patientenzimmer>();
@@ -366,84 +325,6 @@ namespace Raumverwaltung.Controllers
             SQLQuerys.Clear();
         }
         #endregion
-        #endregion
-
-        #region TestDB
-        public List<Raum> LoadRaeumeFromTestDb()
-        {
-            List<Raum> RaumListe = new List<Raum>();
-            try
-            {
-                Com.CommandText =
-                    "SELECT " +
-                    "   R.ID_RaumNummer AS rID, " +
-                    "   Z.ID, " +
-                    "   Z.Zweck, " +
-                    "   R.Außerbetrieb " +
-                    "FROM " +
-                    "   Raum AS R " +
-                    "INNER JOIN " +
-                    "   Zweck_Raum AS Z " +
-                    "ON " +
-                    "   R.ID_Zweck = Z.ID";
-                Com.Connection.Open();
-                MySqlDataReader SqlDR = Com.ExecuteReader();
-                while (SqlDR.Read())
-                {
-                    Raum aRaum = new Raum();
-                    aRaum.rID = Int16.Parse(SqlDR["rID"].ToString());
-                    aRaum.AußerBetrieb = Boolean.Parse(SqlDR["ID"].ToString());
-                    aRaum.ZweckID = Int16.Parse(SqlDR["zID"].ToString());
-                    aRaum.ZweckName = SqlDR["ID"].ToString();
-                    RaumListe.Add(aRaum);
-                }
-            }
-            catch (Exception e)
-            {
-                RaumListe = null;
-                Global.cMainController.LogFile(e.Message);
-            }
-            finally
-            {
-                Com.Connection.Close();
-            }
-            return RaumListe;
-        }
-
-        public List<Patientenzimmer> LoadPatientenzimmerFromTestDb()
-        {
-            List<Patientenzimmer> PzListe = new List<Patientenzimmer>();
-            try
-            {
-                Com.CommandText =
-                    "SELECT " +
-                    "   P.ID_RaumNummer AS pID, " +
-                    "   P.Plätze AS BettenMax, " +
-                    "   P.DavonBelegt AS BettenBelegt " +
-                    "FROM " +
-                    "   Patientenzimmer AS P ";
-                Com.Connection.Open();
-                MySqlDataReader SqlDR = Com.ExecuteReader();
-                while (SqlDR.Read())
-                {
-                    Patientenzimmer aPz = new Patientenzimmer();
-                    aPz.pzID = Int16.Parse(SqlDR["pID"].ToString());
-                    aPz.BettenBelegt = Int16.Parse(SqlDR["BettenMax"].ToString());
-                    aPz.BettenMaxAnzahl = Int16.Parse(SqlDR["BettenBelegt"].ToString());
-                    PzListe.Add(aPz);
-                }
-            }
-            catch (Exception e)
-            {
-                PzListe = null;
-                Global.cMainController.LogFile(e.Message);
-            }
-            finally
-            {
-                Com.Connection.Close();
-            }
-            return PzListe;
-        }
         #endregion
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Raumverwaltung.Controllers;
 using Raumverwaltung.Models;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -60,8 +61,9 @@ namespace Raumverwaltung.View
             //Get UserID noch imlpementieren
             CheckUserRole(UserID);
 
-            Grid1_Fuellen();
-            Grid2_Fuellen();
+//            Grid1_Fuellen();
+            //Grid2_Fuellen();
+            
         }
 
         private void CheckUserRole(int UserID)
@@ -142,11 +144,16 @@ namespace Raumverwaltung.View
 
         protected void ddlZweck_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            DropDownList ddlZweck = (DropDownList)sender;
+            GridViewRow gv = (GridViewRow)ddlZweck.NamingContainer;
+            int index = gv.RowIndex;
+            DropDownList DropDownList1 = (DropDownList)Grid1.Rows[index].FindControl("DropDownList1");
+            Global.cMainController.Raeume[index].ZweckID = Int16.Parse(DropDownList1.SelectedValue);
         }
 
         private void Grid1_Fuellen()
         {
+            DropDownList ddlZweck = (DropDownList)Grid1.Rows[0].FindControl("ddlZweck");
 
             DataTable DT = new DataTable();
             //DT.Col[0]
@@ -155,7 +162,7 @@ namespace Raumverwaltung.View
             DT.Columns.Add(Col);
             //DT.Col[1]
             Col = new DataColumn("Raumtyp");
-            Col.DataType = System.Type.GetType("System.String");
+            Col.DataType = System.Type.GetType("System.Int32");
             DT.Columns.Add(Col);
             //DT.Col[2]
             Col = new DataColumn("Betriebsstatus");
@@ -166,7 +173,7 @@ namespace Raumverwaltung.View
             {
                 DataRow DR = DT.NewRow();
                 DR[0] = R.rID;
-                DR[1] = R.ZweckName;
+                DR[1] = R.ZweckID;
                 DR[2] = R.AußerBetrieb;
                 DT.Rows.Add(DR);
             }
@@ -175,13 +182,47 @@ namespace Raumverwaltung.View
             Session["Grid1"] = Grid1.DataSource;
         }
 
+        protected void Grid1_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                DropDownList ddlZweck = (DropDownList)e.Row.FindControl("ddlZweck");
+                ddlZweck.Items.Clear();
+                List<RaumZweck> _List = new List<RaumZweck>();
+                _List.Add(new RaumZweck(1, "Test"));
+                Global.cMainController.RaumZwecks = _List;
+                foreach (RaumZweck Z in Global.cMainController.RaumZwecks)
+                {
+                    ListItem item = new ListItem();
+                    item.Text = Z.Bezeichnung;
+                    item.Value = Z.ID.ToString();
+                    ddlZweck.Items.Add(item);
+                }
+            }
+        }
+
         protected void Grid1_RowDeleting(object sender, System.Web.UI.WebControls.GridViewDeleteEventArgs e)
         {
-            //Delete DS From Grid1
+            int RowIndex = e.RowIndex;
 
+            DataTable DataTab = (DataTable)Session["GridView1"];
 
-
-            btnAddRaum.Enabled = true;
+            string IDstr = Grid1.Rows[RowIndex].Cells[1].Text.ToString();
+            try
+            {
+                int DatabaseIndex = Int16.Parse(IDstr);
+                DeletePerson(DatabaseIndex);
+            }
+            catch
+            {
+                //IDstr nicht umformbar
+            }
+            finally
+            {
+                //nichts
+            }
+            DataTab.Rows[RowIndex].Delete();
+            BindDataGrid1();
         }
 
         protected void Grid1_RowEditing(object sender, System.Web.UI.WebControls.GridViewEditEventArgs e)
@@ -215,65 +256,22 @@ namespace Raumverwaltung.View
         protected void Grid1_RowUpdating(object sender, System.Web.UI.WebControls.GridViewUpdateEventArgs e)
         {
             DataTable DT = (DataTable)Session["GridView1"];
-
-            GridViewRow row = Grid1.Rows[e.RowIndex];
-
-            for (int I = 1; I < DT.Columns.Count; I++)
-            {
-                string TbValue = ((TextBox)(row.Cells[I + 1].Controls[0])).Text;
-                string Cap = DT.Columns[I].Caption;
-
-                if (Cap.ToLower().EndsWith("datum"))
-                {
-                    DateTime DateVal = DateTime.Today;
-
-                    try
-                    {
-                        DateVal = DateTime.Parse(TbValue);
-                    }
-                    catch
-                    {
-                        //nichts
-                    }
-                    finally
-                    {
-                        TbValue = String.Format("{0:dd.MM.yyyy}", DateVal);
-                    }
-                }
-
-                DT.Rows[row.DataItemIndex][I] = TbValue;
-            }
-
-            string IDstr = ((TextBox)(row.Cells[1].Controls[0])).Text;
-
-            int ID = -1;
-
-            try
-            {
-                ID = Int16.Parse(IDstr);
-            }
-            catch
-            {
-                ID = 0;
-            }
-
-            switch (ID)
-            {
-                case -1:
-                    //nichts
-                    break;
-                case 0:
-                    //InsertPerson(e.RowIndex);
-                    break;
-                default:
-                    //UpdatePerson(e.RowIndex);
-                    break;
-            }
-
-
+            int editIndex = Grid1.EditIndex;
             Grid1.EditIndex = -1;
 
+            DataRow DR = DT.Rows[editIndex];
+            
+            Global.cMainController.Raeume[editIndex].rID = Int16.Parse(DR[0].ToString());
+            Global.cMainController.Raeume[editIndex].ZweckID = Int16.Parse(DR[1].ToString());
+            Global.cMainController.Raeume[editIndex].AußerBetrieb = Boolean.Parse(DR[2].ToString());
+            if (!Global.cMainController.Raeume[editIndex].Added)
+            {
+                Global.cMainController.Raeume[editIndex].Bearbeitet = true;
+            }
+
             BindDataGrid1();
+
+            
 
             btnAddRaum.Enabled = true;
         }
@@ -333,14 +331,29 @@ namespace Raumverwaltung.View
             //< asp:ButtonField ButtonType = "Button" Text = "Schaltfläche" />
         }
 
-        protected void Grid2_PreRender(object sender, EventArgs e)
-        {
-
-        }
-
         protected void Grid2_RowDeleting(object sender, System.Web.UI.WebControls.GridViewDeleteEventArgs e)
         {
             //Delete DS From Grid2
+            int RowIndex = e.RowIndex;
+
+            DataTable DataTab = (DataTable)Session["GridView1"];
+
+            string IDstr = Grid2.Rows[RowIndex].Cells[1].Text.ToString();
+            try
+            {
+                int DatabaseIndex = Int16.Parse(IDstr);
+                DeletePerson(DatabaseIndex);
+            }
+            catch
+            {
+                //IDstr nicht umformbar
+            }
+            finally
+            {
+                //nichts
+            }
+            DataTab.Rows[RowIndex].Delete();
+            BindDataGrid2();
 
 
             btnAddPersZimmer.Enabled = true;
@@ -372,19 +385,33 @@ namespace Raumverwaltung.View
 
         #endregion
 
-        protected void GridView1_Load(object sender, EventArgs e)
-        {
-            DataTable DataTab = (DataTable)Session["Grid2"];
-        }
-
-        protected void Grid3_Load(object sender, EventArgs e)
-        {
-
-        }
-
         protected void LoginStatus1_LoggingOut(object sender, LoginCancelEventArgs e)
         {
 
+        }
+
+        protected void Grid3_Load1(object sender, EventArgs e)
+        {
+            
+        }
+
+        protected void Grid3_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                DropDownList ddlZweck = (DropDownList)e.Row.FindControl("ddlZweck");
+                ddlZweck.Items.Clear();   
+                List<RaumZweck> _List = new List<RaumZweck>();
+                _List.Add(new RaumZweck(1, "Test"));
+                Global.cMainController.RaumZwecks = _List;
+                foreach (RaumZweck Z in Global.cMainController.RaumZwecks)
+                {
+                    ListItem item = new ListItem();
+                    item.Text = Z.Bezeichnung;
+                    item.Value = Z.ID.ToString();
+                    ddlZweck.Items.Add(item);
+                }
+            }
         }
     }
 }

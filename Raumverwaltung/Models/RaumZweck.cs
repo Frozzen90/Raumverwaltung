@@ -25,6 +25,14 @@ namespace Raumverwaltung.Models
             Bearbeitet = false;
         }
 
+        public RaumZweck(RaumZweck RZ)
+        {
+            this.ID = RZ.ID;
+            this.Bezeichnung = RZ.Bezeichnung;
+            this.Added = false;
+            this.Bearbeitet = false;
+        }
+
         public RaumZweck(int iD, string bezeichnung, bool added = false, bool bearbeitet = false)
         {
             ID = iD;

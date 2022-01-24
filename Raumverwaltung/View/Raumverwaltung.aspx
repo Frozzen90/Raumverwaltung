@@ -37,6 +37,7 @@
                             OnRowDeleting="Grid1_RowDeleting"
                             OnRowEditing="Grid1_RowEditing"
                             OnRowUpdating="Grid1_RowUpdating" 
+                            OnRowDataBound="Grid1_RowDataBound"
                             ShowHeaderWhenEmpty="True" >
                             <Columns>
                                 <asp:TemplateField>
@@ -67,8 +68,7 @@
                             OnRowDeleting="Grid2_RowDeleting"
                             OnRowEditing="Grid2_RowEditing"
                             OnRowUpdating="Grid2_RowUpdating" 
-                            ShowHeaderWhenEmpty="True"
-                            OnPreRender="Grid2_PreRender"/>
+                            ShowHeaderWhenEmpty="True"/>
                     </asp:TableCell>
                     <asp:TableCell runat="server">
                         <asp:Button ID="btnAddPersZimmer" runat="server" Text="Hinzufügen" OnClick="btnAddPersZimmer_Click" />
@@ -82,21 +82,26 @@
                 OnRowCancelingEdit="Grid2_RowCancelingEdit"
                 OnRowDeleting="Grid2_RowDeleting"
                 OnRowEditing="Grid2_RowEditing"
-                OnRowUpdating="Grid2_RowUpdating" 
+                OnRowUpdating="Grid2_RowUpdating" OnRowDataBound="Grid3_RowDataBound" 
                 >
                 <Columns>
-                    <asp:BoundField />
-                    <asp:ButtonField ButtonType="Button" Text="Schaltfläche" />
-                    <asp:DynamicField />
+                    <asp:BoundField 
+                    />
                     <asp:TemplateField>
                         <ItemTemplate>
-                            <asp:DropDownList ID="ddlZweck" runat="server" Autopostback="true" OnSelectedIndexChanged="ddlZweck_SelectedIndexChanged"/>
+                            <asp:DropDownList 
+                                ID="ddlZweck" 
+                                runat="server" 
+                                Autopostback="true" 
+                                OnSelectedIndexChanged="ddlZweck_SelectedIndexChanged"/>
                         </ItemTemplate>
                     </asp:TemplateField>
+                    <asp:BoundField />
                 </Columns>
                 </asp:GridView>
                 <br />
                 <asp:CheckBox ID="CB1" runat="server" />
+                <asp:DropDownList ID="ddltest" runat="server"/>
                 <br />
         </div>
     </form>
