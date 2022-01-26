@@ -41,11 +41,15 @@
                             ShowHeaderWhenEmpty="True"
                             AutoGenerateColumns="False"
                             >
-                            <Columns>
-                                <asp:BoundField DataField="ID" HeaderText="ID" />
-                                <asp:TemplateField  HeaderText="Zweck">
-                                    <ItemTemplate>
-                                         <asp:DropDownList ID="ddlZweck" runat="server" OnDataBound="ddltest_DataBound"/>
+                            <Columns runat="server">
+                                <asp:BoundField DataField="ID" HeaderText="ID" OnFieldChange="" />
+                                <asp:TemplateField HeaderText="Zweck" runat="server">
+                                    <ItemTemplate runat="server">
+                                        <asp:Label ID="lblZweck" runat="server" Text='<%# Eval("Zweck") %>' Visible="false" />
+                                        <asp:DropDownList 
+                                            ID="ddlZweck" 
+                                            runat="server" 
+                                            AutoPostBack="True" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:CheckBoxField DataField="außer Betrieb" HeaderText="außer Betrieb" />
@@ -54,12 +58,12 @@
                     </asp:TableCell>
                     <asp:TableCell runat="server">
                         <asp:Button ID="btnAddRaum" runat="server" Text="Hinzufügen" OnClick="btnAddRaum_Click" />
-                    </asp:TableCell>
+            </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>
         </div>
         <div>
-            <asp:Table ID="Table2" runat="server" Visible="true">
+            <asp:Table ID="Table2" runat="server" Visible="false">
                 <asp:TableRow runat="server">
                     <asp:TableCell runat="server">
                         <asp:GridView
@@ -79,43 +83,6 @@
                     </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>
-            <asp:GridView 
-                ID="Grid3"
-                runat="server"
-                AutoGenerateSelectButton="True"
-                OnRowCancelingEdit="Grid2_RowCancelingEdit"
-                OnRowDeleting="Grid2_RowDeleting"
-                OnRowEditing="Grid2_RowEditing"
-                OnRowUpdating="Grid2_RowUpdating" 
-                OnRowDataBound="Grid3_RowDataBound" 
-                ShowHeaderWhenEmpty="True"
-                AutoGenerateColumns="False"
-                >
-                <Columns>
-                    <asp:BoundField HeaderText="ID" />
-                    <asp:TemplateField HeaderText="Zweck">
-                        <EditItemTemplate>
-                             <asp:DropDownList ID="ddlZweck" runat="server"/>
-                        </EditItemTemplate>
-                        <ItemTemplate>
-                            <asp:Label ID="lblZweck" runat="server" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="außer Betrieb">
-                        <EditItemTemplate>
-                            <asp:CheckBox ID="cbABetrieb" runat="server" />
-                        </EditItemTemplate>
-                        <ItemTemplate>
-                            <asp:CheckBox ID="cbABetrieb" runat="server" />
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:CheckBoxField Text="Test" />
-                </Columns>
-                </asp:GridView>
-                <br />
-                <asp:CheckBox ID="CB1" runat="server" />
-                <asp:DropDownList ID="ddltest" runat="server" OnDataBound="ddltest_DataBound"/>
-                <br />
         </div>
     </form>
 </body>
